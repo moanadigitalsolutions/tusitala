@@ -1,29 +1,32 @@
 # Tusitala - Content Creator Platform
 
-A comprehensive content creation and marketing management platform built with Next.js, TypeScript, and PostgreSQL. Manage your content strategy across multiple channels with a professional, shadcn/ui-powered interface.
+A comprehensive content creation and marketing management platform built with Next.js, TypeScript, and PostgreSQL. Manage your content strategy across multiple channels with WordPress integration and a professional WYSIWYG editor.
 
 ## ✨ Features
 
 ### **Content Management**
-- 📝 Rich content editor with toolbar
-- 📅 Post scheduling system
-- 🏷️ Campaign organization
-- 📊 Multi-channel publishing
-- 💾 Draft auto-save
+- 📝 **Tiptap v3 WYSIWYG Editor** - Professional rich text editing with visual formatting
+- 🔗 **WordPress Integration** - Direct publishing to WordPress with full API support
+- 📅 Post scheduling and draft management
+- 🏷️ **Categories & Tags** - WordPress-synced taxonomy management
+- �️ **Featured Images** - Upload and manage post thumbnails
+- 🔍 **SEO Fields** - Built-in meta description and keywords
+- 💾 Auto-save functionality
 
 ### **Dashboard & Analytics**
 - 📈 Real-time stats and metrics
 - 🔥 Recent activity feed  
 - 🎯 Quick action buttons
 - 📋 Campaign overview
+- 📊 Content performance tracking
 
-### **Channel Integration** 
-- 🐦 Twitter/X support
-- 💼 LinkedIn publishing
-- 📷 Instagram posts
-- 📧 Email campaigns
-- 🌐 Blog publishing
-- 🎵 TikTok integration
+### **WordPress Publishing** 
+- ✅ **Full WordPress REST API Integration**
+- 🏷️ **Category & Tag Sync** - Real-time WordPress taxonomy
+- �️ **Media Management** - Featured image uploads
+- � **SEO Integration** - Meta fields and descriptions
+- � **Draft & Publish** - Complete WordPress workflow
+- � **All Features Visible** - No need to publish first to access features
 
 ### **User Experience**
 - 📱 Mobile-responsive design
@@ -35,10 +38,58 @@ A comprehensive content creation and marketing management platform built with Ne
 ## 🛠️ Tech Stack
 
 - **Frontend:** Next.js 14, TypeScript, Tailwind CSS
+- **Editor:** Tiptap v3.3.1 - Rich text WYSIWYG editor with SSR support
 - **UI Components:** shadcn/ui with Lucide icons
 - **Database:** PostgreSQL with Prisma ORM
+- **WordPress:** REST API integration for publishing
 - **Styling:** CSS Variables design system
 - **Icons:** Lucide React
+
+## 🚀 Quick Start
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/moanadigitalsolutions/tusitala.git
+   cd tusitala
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup:**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Configure your `.env` file with:
+   - `WORDPRESS_URL` - Your WordPress site URL
+   - `WORDPRESS_USERNAME` - WordPress username
+   - `WORDPRESS_PASSWORD` - WordPress application password
+
+4. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📖 Usage
+
+### Creating Content
+1. Navigate to **Dashboard → Posts → New Post**
+2. Use the **WYSIWYG editor** for rich text formatting
+3. Add **categories, tags, and featured images**
+4. Configure **SEO fields** (meta description, keywords)
+5. **Publish directly to WordPress** or save as draft
+
+### WordPress Integration
+- **Categories & Tags** sync automatically from WordPress
+- **Featured images** upload to WordPress media library
+- **SEO fields** integrate with WordPress meta
+- **All features visible** without needing to publish first
 
 ## 📁 Project Structure
 
