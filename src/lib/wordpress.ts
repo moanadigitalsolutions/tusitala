@@ -29,6 +29,7 @@ export interface WordPressCategory {
   slug: string;
   description: string;
   count: number;
+  parent?: number;
 }
 
 export interface WordPressTag {

@@ -14,7 +14,7 @@ export default function CampaignsPage() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/dashboard/campaigns/new">
+          <Link href={"/dashboard/campaigns/new" as any}>
             <Plus className="mr-2 h-4 w-4" />
             New Campaign
           </Link>

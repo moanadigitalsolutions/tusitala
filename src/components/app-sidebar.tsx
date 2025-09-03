@@ -30,7 +30,7 @@ export function AppSidebar({ className }: { className?: string }) {
               variant="ghost"
               className="w-full justify-start gap-2"
             >
-              <Link href={item.href}>
+              <Link href={item.href as any}>
                 <Icon className="h-4 w-4" /> {item.label}
               </Link>
             </Button>

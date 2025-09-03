@@ -120,7 +120,7 @@ export default function DashboardPage() {
               </div>
             </Link>
             
-            <Link href="/dashboard/campaigns/new" className="block">
+            <Link href={"/dashboard/campaigns/new" as any} className="block">
               <div className="flex items-center p-3 rounded-lg border hover:bg-accent transition-colors">
                 <Rocket className="h-5 w-5 mr-3" />
                 <div>
