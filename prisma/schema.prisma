@@ -1,0 +1,101 @@
+// Prisma schema for tusitala content creator platform
+// Adjust provider to match your deployed Postgres (neon, supabase, railway etc.)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  role          UserRole @default(CREATOR)
+  avatarUrl     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  posts         Post[]
+  campaigns     Campaign[] @relation("CampaignOwner")
+}
+
+enum UserRole {
+  ADMIN
+  CREATOR
+  MARKETER
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  content     Json
+  status      PostStatus @default(DRAFT)
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  campaign    Campaign? @relation(fields: [campaignId], references: [id])
+  campaignId  String?
+  channels    PostChannel[]
+  
+  // WordPress integration fields
+  wpPostId    Int?      // WordPress post ID when published
+  wpStatus    String?   // WordPress post status
+  wpUrl       String?   // WordPress post URL
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  objective   String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  owner       User     @relation("CampaignOwner", fields: [ownerId], references: [id])
+  ownerId     String
+  posts       Post[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Channel {
+  id        String        @id @default(cuid())
+  name      String
+  type      ChannelType
+  config    Json
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  posts     PostChannel[]
+}
+
+enum ChannelType {
+  EMAIL
+  TWITTER
+  LINKEDIN
+  INSTAGRAM
+  FACEBOOK
+  TIKTOK
+  BLOG
+  WORDPRESS
+}
+
+model PostChannel {
+  postId   String
+  channelId String
+  post     Post    @relation(fields: [postId], references: [id])
+  channel  Channel @relation(fields: [channelId], references: [id])
+  primary  Boolean @default(false)
+  @@id([postId, channelId])
+}

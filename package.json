@@ -1,0 +1,46 @@
+{
+  "name": "tusitala",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "db:push": "prisma db push",
+    "db:seed": "npm run prisma:seed"
+  },
+  "dependencies": {
+    "@prisma/client": "latest",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@tiptap/extension-image": "^3.3.1",
+    "@tiptap/extension-link": "^3.3.1",
+    "@tiptap/extension-placeholder": "^3.3.1",
+    "@tiptap/react": "^3.3.1",
+    "@tiptap/starter-kit": "^3.3.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.424.0",
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.3.3",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8.4.38",
+    "prisma": "latest",
+    "tailwindcss": "^3.4.9",
+    "tsx": "^4.20.5",
+    "typescript": "^5.4.0"
+  }
+}
