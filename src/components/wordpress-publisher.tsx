@@ -210,7 +210,8 @@ export function WordPressPublisher({
         featured_media: mediaId,
         categories: categories.length > 0 ? categories : undefined,
         tags: tags.length > 0 ? tags : undefined,
-        excerpt: excerpt.trim() || undefined,
+        // Use meta description as excerpt if provided, otherwise use the excerpt field
+        excerpt: metaDescription.trim() || excerpt.trim() || undefined,
         slug: slug.trim() || undefined,
         ...(Object.keys(metaFields).length > 0 && { meta: metaFields })
       };
