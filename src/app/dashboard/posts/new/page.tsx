@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { ContentEditor } from '@/components/content-editor';
 import { WordPressPublisher } from '@/components/wordpress-publisher';
 import { FeaturedImageUploader } from '@/components/featured-image-uploader';
@@ -27,6 +30,11 @@ export default function NewPostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [slug, setSlug] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
+  const [focusKeyphrase, setFocusKeyphrase] = useState('');
+  
+  // Scheduling
+  const [scheduledDate, setScheduledDate] = useState('');
+  const [isScheduled, setIsScheduled] = useState(false);
 
   const handlePublishToWordPress = async () => {
     if (!title.trim() || !content.trim()) {
@@ -50,7 +58,8 @@ export default function NewPostPage() {
       selectedTags,
       excerpt,
       slug,
-      metaDescription
+      metaDescription,
+      focusKeyphrase
     });
   };
 
@@ -130,10 +139,45 @@ export default function NewPostPage() {
             excerpt={excerpt}
             slug={slug}
             metaDescription={metaDescription}
+            focusKeyphrase={focusKeyphrase}
             onExcerptChange={setExcerpt}
             onSlugChange={setSlug}
             onMetaDescriptionChange={setMetaDescription}
+            onFocusKeyphraseChange={setFocusKeyphrase}
           />
+          
+          {/* Scheduling Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Publishing Schedule</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="schedule" 
+                  checked={isScheduled}
+                  onCheckedChange={(checked) => setIsScheduled(checked === true)}
+                />
+                <Label htmlFor="schedule">Schedule for later</Label>
+              </div>
+              
+              {isScheduled && (
+                <div>
+                  <Label htmlFor="scheduleDate">Publish Date & Time</Label>
+                  <Input
+                    id="scheduleDate"
+                    type="datetime-local"
+                    value={scheduledDate}
+                    onChange={(e) => setScheduledDate(e.target.value)}
+                    min={new Date().toISOString().slice(0, 16)}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Post will be automatically published at the scheduled time
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
           
           <Card>
             <CardHeader>
@@ -174,6 +218,8 @@ export default function NewPostPage() {
               excerpt={excerpt}
               slug={slug}
               metaDescription={metaDescription}
+              focusKeyphrase={focusKeyphrase}
+              scheduledDate={isScheduled ? scheduledDate : undefined}
               onPublishSuccess={(result: any) => {
                 console.log('Published successfully:', result);
                 alert(`Successfully published: ${result.title}`);

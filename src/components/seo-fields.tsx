@@ -10,9 +10,11 @@ interface SEOFieldsProps {
   excerpt: string;
   slug: string;
   metaDescription: string;
+  focusKeyphrase: string;
   onExcerptChange: (excerpt: string) => void;
   onSlugChange: (slug: string) => void;
   onMetaDescriptionChange: (description: string) => void;
+  onFocusKeyphraseChange: (keyphrase: string) => void;
   title?: string;
   disabled?: boolean;
 }
@@ -21,9 +23,11 @@ export function SEOFields({
   excerpt,
   slug,
   metaDescription,
+  focusKeyphrase,
   onExcerptChange,
   onSlugChange,
   onMetaDescriptionChange,
+  onFocusKeyphraseChange,
   title = '',
   disabled = false
 }: SEOFieldsProps) {
@@ -152,6 +156,24 @@ export function SEOFields({
               ⚠️ Description may be truncated in search results
             </div>
           )}
+        </div>
+
+        {/* Focus Keyphrase */}
+        <div className="space-y-2">
+          <label htmlFor="focus-keyphrase" className="block text-sm font-medium">
+            Focus Keyphrase
+          </label>
+          <Input
+            id="focus-keyphrase"
+            placeholder="Main keyword or phrase for this post..."
+            value={focusKeyphrase}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onFocusKeyphraseChange(e.target.value)}
+            disabled={disabled}
+            maxLength={100}
+          />
+          <div className="text-xs text-muted-foreground">
+            The main keyword you want this post to rank for in search engines
+          </div>
         </div>
 
         {/* SEO Tips */}

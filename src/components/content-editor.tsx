@@ -35,40 +35,6 @@ export function ContentEditor({ content, onChange, placeholder = "Start writing.
   const [isPreview, setIsPreview] = React.useState(false);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
 
-  // Convert markdown to HTML
-  const markdownToHtml = React.useCallback((markdown: string): string => {
-    return markdown
-      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/`(.*?)`/g, '<code>$1</code>')
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-      .replace(/^- (.*$)/gm, '<ul><li>$1</li></ul>')
-      .replace(/^\d+\. (.*$)/gm, '<ol><li>$1</li></ol>')
-      .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>')
-      .replace(/\n/g, '<br>');
-  }, []);
-
-  // Simple HTML to Markdown converter
-  const htmlToMarkdown = React.useCallback((html: string): string => {
-    return html
-      .replace(/<h1>(.*?)<\/h1>/g, '# $1')
-      .replace(/<h2>(.*?)<\/h2>/g, '## $1')
-      .replace(/<h3>(.*?)<\/h3>/g, '### $1')
-      .replace(/<strong>(.*?)<\/strong>/g, '**$1**')
-      .replace(/<em>(.*?)<\/em>/g, '*$1*')
-      .replace(/<code>(.*?)<\/code>/g, '`$1`')
-      .replace(/<a[^>]*href="([^"]*)"[^>]*>(.*?)<\/a>/g, '[$2]($1)')
-      .replace(/<ul><li>(.*?)<\/li><\/ul>/g, '- $1')
-      .replace(/<ol><li>(.*?)<\/li><\/ol>/g, '1. $1')
-      .replace(/<blockquote>(.*?)<\/blockquote>/g, '> $1')
-      .replace(/<br\s*\/?>/g, '\n')
-      .replace(/<p>(.*?)<\/p>/g, '$1\n')
-      .replace(/<[^>]*>/g, '');
-  }, []);
-
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -93,11 +59,10 @@ export function ContentEditor({ content, onChange, placeholder = "Start writing.
         placeholder,
       }),
     ],
-    content: markdownToHtml(content),
+    content: content || '<p></p>',
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      const markdown = htmlToMarkdown(html);
-      onChange(markdown);
+      onChange(html);
     },
     editorProps: {
       attributes: {
@@ -107,10 +72,10 @@ export function ContentEditor({ content, onChange, placeholder = "Start writing.
   });
 
   React.useEffect(() => {
-    if (editor && content !== htmlToMarkdown(editor.getHTML())) {
-      editor.commands.setContent(markdownToHtml(content));
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content || '<p></p>');
     }
-  }, [content, editor, htmlToMarkdown, markdownToHtml]);
+  }, [content, editor]);
 
   // Toolbar button functions
   const toggleBold = () => editor?.chain().focus().toggleBold().run();
@@ -138,10 +103,12 @@ export function ContentEditor({ content, onChange, placeholder = "Start writing.
 
   // Calculate statistics
   const getStatistics = () => {
-    const characters = content.length;
-    const words = content.split(/\s+/).filter(word => word.length > 0).length;
-    const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
-    const paragraphs = content.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
+    // Extract text content from HTML for accurate statistics
+    const textContent = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    const characters = textContent.length;
+    const words = textContent.split(/\s+/).filter(word => word.length > 0).length;
+    const sentences = textContent.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+    const paragraphs = content.split(/<\/p>|<br\s*\/?>/i).filter(p => p.replace(/<[^>]*>/g, '').trim().length > 0).length;
     const readingTime = Math.ceil(words / 200);
     
     return { characters, words, sentences, paragraphs, readingTime };
@@ -317,7 +284,7 @@ export function ContentEditor({ content, onChange, placeholder = "Start writing.
         {isPreview ? (
           <div 
             className="w-full p-4 min-h-[200px] prose prose-sm max-w-none"
-            dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }}
+            dangerouslySetInnerHTML={{ __html: content || '<p>No content</p>' }}
           />
         ) : (
           <EditorContent editor={editor} />

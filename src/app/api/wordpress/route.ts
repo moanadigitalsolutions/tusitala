@@ -59,7 +59,8 @@ export async function POST(request: NextRequest) {
         featured_media,
         excerpt,
         slug,
-        meta
+        meta,
+        date
       } = postData;
 
       if (!title || !content) {
@@ -93,6 +94,9 @@ export async function POST(request: NextRequest) {
       }
       if (meta) {
         postPayload.meta = meta;
+      }
+      if (date) {
+        postPayload.date = date;
       }
 
       const wpPost = await wordPressService.createPost(postPayload);
