@@ -7,6 +7,7 @@ import { Link } from '@tiptap/extension-link';
 import { Image } from '@tiptap/extension-image';
 import { Placeholder } from '@tiptap/extension-placeholder';
 import { Button } from '@/components/ui/button';
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 import { cn } from '@/lib/utils';
 import { 
   Bold, 
@@ -29,11 +30,19 @@ interface ContentEditorProps {
   onChange: (content: string) => void;
   placeholder?: string;
   className?: string;
+  userId?: string; // For image uploads - in real app get from auth context
 }
 
-export function ContentEditor({ content, onChange, placeholder = "Start writing...", className }: ContentEditorProps) {
+export function ContentEditor({ 
+  content, 
+  onChange, 
+  placeholder = "Start writing...", 
+  className,
+  userId = "temp-user" // Default for demo - replace with actual user ID from auth
+}: ContentEditorProps) {
   const [isPreview, setIsPreview] = React.useState(false);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
+  const [showImageDialog, setShowImageDialog] = React.useState(false);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -87,11 +96,19 @@ export function ContentEditor({ content, onChange, placeholder = "Start writing.
       editor?.chain().focus().setLink({ href: url }).run();
     }
   };
-  const insertImage = () => {
-    const url = window.prompt('Enter image URL:', 'https://');
-    if (url) {
-      editor?.chain().focus().setImage({ src: url }).run();
+  
+  const handleImageSelect = (imageData: { src: string; alt?: string; title?: string }) => {
+    if (editor) {
+      editor.chain().focus().setImage({ 
+        src: imageData.src,
+        alt: imageData.alt || '',
+        title: imageData.title || ''
+      }).run();
     }
+  };
+  
+  const insertImage = () => {
+    setShowImageDialog(true);
   };
   const setHeading = (level: 1 | 2 | 3) => {
     editor?.chain().focus().toggleHeading({ level }).run();
@@ -306,6 +323,14 @@ export function ContentEditor({ content, onChange, placeholder = "Start writing.
           </span>
         </div>
       </div>
+      
+      {/* Image Upload Dialog */}
+      <ImageUploadDialog
+        isOpen={showImageDialog}
+        onClose={() => setShowImageDialog(false)}
+        onImageSelect={handleImageSelect}
+        userId={userId}
+      />
     </div>
   );
 }

@@ -14,6 +14,9 @@ dist/
 # Production build
 build/
 
+# Uploaded images (temporary storage)
+public/uploads/temp/
+
 # Environment variables
 .env
 .env.local

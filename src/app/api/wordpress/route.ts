@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { wordPressService } from '@/lib/wordpress';
+import { ContentImageProcessor, ImageProcessingResult } from '@/lib/content-image-processor';
 
 export async function GET() {
   try {
@@ -60,7 +61,8 @@ export async function POST(request: NextRequest) {
         excerpt,
         slug,
         meta,
-        date
+        date,
+        userId // Add userId for image processing
       } = postData;
 
       if (!title || !content) {
@@ -68,6 +70,23 @@ export async function POST(request: NextRequest) {
           { error: 'Title and content are required' },
           { status: 400 }
         );
+      }
+
+      // Process images in content - upload local images to WordPress
+      let processedContent = content;
+      let imageUploadResults: ImageProcessingResult[] = [];
+      
+      if (userId && content.includes('/uploads/temp/')) {
+        try {
+          const imageProcessing = await ContentImageProcessor.processContentImages(content, userId);
+          processedContent = imageProcessing.processedContent;
+          imageUploadResults = imageProcessing.uploadResults;
+          
+          console.log(`Processed ${imageUploadResults.length} images for WordPress upload`);
+        } catch (error) {
+          console.warn('Image processing failed, continuing with original content:', error);
+          // Continue with original content if image processing fails
+        }
       }
 
       // Handle tag names - convert to tag IDs if they're strings
@@ -78,7 +97,7 @@ export async function POST(request: NextRequest) {
 
       const postPayload: any = {
         title: { raw: title },
-        content: { raw: content },
+        content: { raw: processedContent }, // Use processed content with WordPress image URLs
         status,
         categories,
         tags: tagIds,
@@ -109,6 +128,7 @@ export async function POST(request: NextRequest) {
           status: wpPost.status,
           url: `${process.env.WP_BASE_URL}/?p=${wpPost.id}`,
         },
+        imageUploads: imageUploadResults, // Include image upload results
       });
     }
 

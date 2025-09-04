@@ -17,6 +17,7 @@ interface WordPressPublisherProps {
   metaDescription?: string;
   focusKeyphrase?: string;
   scheduledDate?: string;
+  userId?: string; // For image processing
   onPublishSuccess?: (result: any) => void;
   onPublishError?: (error: string) => void;
   onMediaUpload?: (mediaId: number) => void;
@@ -41,6 +42,7 @@ export function WordPressPublisher({
   metaDescription = '',
   focusKeyphrase = '',
   scheduledDate,
+  userId = "temp-user", // Default for demo
   onPublishSuccess, 
   onPublishError,
   onMediaUpload
@@ -213,6 +215,7 @@ export function WordPressPublisher({
         // Use meta description as excerpt if provided, otherwise use the excerpt field
         excerpt: metaDescription.trim() || excerpt.trim() || undefined,
         slug: slug.trim() || undefined,
+        userId: userId, // Include userId for image processing
         ...(Object.keys(metaFields).length > 0 && { meta: metaFields })
       };
 
